@@ -36,6 +36,7 @@ def get_in_stock_items(shop_data):
             for item in category["items"]:
                 name = item.get("name", "")
                 stock = item.get("stock", 0)
+
                 if stock and stock > 0:
                     items.append({
                         "category": category_name,
@@ -46,14 +47,16 @@ def get_in_stock_items(shop_data):
     return items
 
 
-def find_rare_items(in_stock_items):
+def get_in_stock_rare_items(in_stock_items):
     found = []
+
     for item in in_stock_items:
         lower_name = item["name"].lower()
         for rare in RARE_ITEMS:
             if rare in lower_name:
-                found.append(item["name"])
+                found.append(item)
                 break
+
     return found
 
 
@@ -67,8 +70,8 @@ def save_state(data):
     STATE_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
-def send_discord_alert(found_items, in_stock_items):
-    rare_text = ", ".join(found_items)
+def send_discord_alert(found_rare_items, in_stock_items):
+    rare_text = ", ".join(item["name"] for item in found_rare_items)
     stock_lines = "\n".join(
         f"- {item['name']} x{item['stock']} ({item['category']})"
         for item in in_stock_items
@@ -87,15 +90,41 @@ def send_discord_alert(found_items, in_stock_items):
     r = requests.post(WEBHOOK_URL, json=payload, timeout=20)
     r.raise_for_status()
 
+
 def main():
-    send_discord_alert(
-        ["test rare item"],
-        [
-            {"name": "Cactus", "stock": 3, "category": "seed"},
-            {"name": "Bamboo", "stock": 2, "category": "seed"},
-        ]
-    )
-    print("Test alert sent.")
+    current_shop = fetch_shop_data()
+    current_in_stock = get_in_stock_items(current_shop)
+    current_rare = get_in_stock_rare_items(current_in_stock)
+
+    print("Current in-stock items:", [item["name"] for item in current_in_stock])
+    print("Current rare items:", [item["name"] for item in current_rare])
+
+    previous_shop = load_previous_state()
+
+    if previous_shop is None or not previous_shop:
+        print("No previous state found. Saving baseline.")
+        save_state(current_shop)
+        return
+
+    previous_in_stock = get_in_stock_items(previous_shop)
+    previous_rare = get_in_stock_rare_items(previous_in_stock)
+
+    previous_rare_names = {item["name"] for item in previous_rare}
+    current_rare_names = {item["name"] for item in current_rare}
+
+    new_rare_names = current_rare_names - previous_rare_names
+    new_rare_items = [item for item in current_rare if item["name"] in new_rare_names]
+
+    print("Previous rare items:", list(previous_rare_names))
+    print("New rare items:", list(new_rare_names))
+
+    if new_rare_items:
+        send_discord_alert(new_rare_items, current_in_stock)
+        print("Alert sent.")
+    else:
+        print("No new tracked rare items found.")
+
+    save_state(current_shop)
 
 
 if __name__ == "__main__":
