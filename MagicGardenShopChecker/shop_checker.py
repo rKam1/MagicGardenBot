@@ -87,32 +87,15 @@ def send_discord_alert(found_items, in_stock_items):
     r = requests.post(WEBHOOK_URL, json=payload, timeout=20)
     r.raise_for_status()
 
-
 def main():
-    current_shop = fetch_shop_data()
-    in_stock_items = get_in_stock_items(current_shop)
-    found_items = find_rare_items(in_stock_items)
-
-    print("In stock:", [item["name"] for item in in_stock_items])
-    print("Rare found:", found_items)
-
-    previous_shop = load_previous_state()
-
-    if previous_shop is None:
-        print("No previous state found. Saving baseline.")
-        save_state(current_shop)
-        return
-
-    if current_shop != previous_shop:
-        print("Shop changed.")
-        if found_items:
-            send_discord_alert(found_items, in_stock_items)
-            print("Alert sent.")
-        else:
-            print("No tracked rare items found.")
-        save_state(current_shop)
-    else:
-        print("No shop change detected.")
+    send_discord_alert(
+        ["test rare item"],
+        [
+            {"name": "Cactus", "stock": 3, "category": "seed"},
+            {"name": "Bamboo", "stock": 2, "category": "seed"},
+        ]
+    )
+    print("Test alert sent.")
 
 
 if __name__ == "__main__":
