@@ -1,0 +1,154 @@
+{
+  "seed": {
+    "secondsUntilRestock": 293,
+    "items": [
+      {
+        "name": "Carrot",
+        "stock": 9
+      },
+      {
+        "name": "Cabbage",
+        "stock": 3
+      },
+      {
+        "name": "Strawberry",
+        "stock": 4
+      },
+      {
+        "name": "Aloe",
+        "stock": 9
+      },
+      {
+        "name": "Beet",
+        "stock": 5
+      },
+      {
+        "name": "FavaBean",
+        "stock": 2
+      },
+      {
+        "name": "Blueberry",
+        "stock": 4
+      },
+      {
+        "name": "Tomato",
+        "stock": 1
+      },
+      {
+        "name": "Corn",
+        "stock": 5
+      },
+      {
+        "name": "Gentian",
+        "stock": 1
+      },
+      {
+        "name": "Banana",
+        "stock": 2
+      },
+      {
+        "name": "Lily",
+        "stock": 1
+      },
+      {
+        "name": "Grape",
+        "stock": 1
+      },
+      {
+        "name": "Lychee",
+        "stock": 2
+      }
+    ]
+  },
+  "tool": {
+    "secondsUntilRestock": 593,
+    "items": [
+      {
+        "name": "WateringCan",
+        "stock": 3
+      },
+      {
+        "name": "PlanterPot",
+        "stock": 5
+      },
+      {
+        "name": "CropCleanser",
+        "stock": 2
+      },
+      {
+        "name": "Shovel",
+        "stock": 1
+      }
+    ]
+  },
+  "egg": {
+    "secondsUntilRestock": 293,
+    "items": [
+      {
+        "name": "CommonEgg",
+        "stock": 3
+      },
+      {
+        "name": "RareEgg",
+        "stock": 1
+      }
+    ]
+  },
+  "decor": {
+    "secondsUntilRestock": 1193,
+    "items": [
+      {
+        "name": "SmallRock",
+        "stock": 4
+      },
+      {
+        "name": "MediumRock",
+        "stock": 2
+      },
+      {
+        "name": "HayBale",
+        "stock": 2
+      },
+      {
+        "name": "StringLights",
+        "stock": 2
+      },
+      {
+        "name": "WoodBench",
+        "stock": 2
+      },
+      {
+        "name": "WoodArch",
+        "stock": 2
+      },
+      {
+        "name": "WoodBridge",
+        "stock": 2
+      },
+      {
+        "name": "StoneBench",
+        "stock": 2
+      },
+      {
+        "name": "StoneArch",
+        "stock": 2
+      },
+      {
+        "name": "FeedingTrough",
+        "stock": 1
+      },
+      {
+        "name": "DecorShed",
+        "stock": 1
+      },
+      {
+        "name": "PetHutch",
+        "stock": 1
+      },
+      {
+        "name": "SeedSilo",
+        "stock": 1
+      }
+    ]
+  }
+}
