@@ -20,7 +20,6 @@ TRACKED_ITEMS = {
     "Starweaver Pod": ["starweaver", "starweaverpod"],
     "Dawnbinder Pod": ["dawnbinder", "dawnbinderpod"],
     "Moonbinder Pod": ["moonbinder", "moonbinderpod"],
-    "Burro's Tail": ["burrostail"],
 }
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
