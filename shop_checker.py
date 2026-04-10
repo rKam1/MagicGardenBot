@@ -3,6 +3,7 @@ import os
 import re
 import time
 from pathlib import Path
+from datetime import datetime, timedelta
 
 import requests
 
@@ -23,6 +24,8 @@ TRACKED_ITEMS = {
 }
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
+LAST_ALERT_TIME = None
+COOLDOWN = timedelta(minutes=5)
 POLL_SECONDS = 20
 
 
@@ -85,6 +88,15 @@ def save_state(data):
 
 
 def send_discord_alert(tracked_items):
+    global LAST_ALERT_TIME
+
+    now = datetime.utcnow()
+
+    if LAST_ALERT_TIME is not None:
+        if now - LAST_ALERT_TIME < COOLDOWN:
+            print("Skipping alert due to cooldown.")
+            return
+
     tracked_text = ", ".join(item["display_name"] for item in tracked_items)
 
     payload = {
@@ -98,6 +110,8 @@ def send_discord_alert(tracked_items):
     print("Discord status:", r.status_code)
     print("Discord response:", r.text)
     r.raise_for_status()
+
+    LAST_ALERT_TIME = now
 
 
 def run_check():
