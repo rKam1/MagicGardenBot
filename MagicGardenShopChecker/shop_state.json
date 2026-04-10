@@ -1,10 +1,10 @@
 {
   "seed": {
-    "secondsUntilRestock": 205,
+    "secondsUntilRestock": 256,
     "items": [
       {
         "name": "Carrot",
-        "stock": 25
+        "stock": 22
       },
       {
         "name": "Cabbage",
@@ -12,64 +12,56 @@
       },
       {
         "name": "Strawberry",
-        "stock": 5
+        "stock": 1
       },
       {
         "name": "Aloe",
-        "stock": 8
+        "stock": 7
       },
       {
         "name": "Beet",
+        "stock": 10
+      },
+      {
+        "name": "FavaBean",
+        "stock": 3
+      },
+      {
+        "name": "Blueberry",
         "stock": 5
       },
       {
-        "name": "Apple",
-        "stock": 1
-      },
-      {
-        "name": "OrangeTulip",
-        "stock": 16
-      },
-      {
-        "name": "Tomato",
-        "stock": 3
-      },
-      {
-        "name": "Echeveria",
-        "stock": 2
-      },
-      {
-        "name": "Pear",
-        "stock": 2
-      },
-      {
-        "name": "Gentian",
-        "stock": 1
-      },
-      {
         "name": "Banana",
-        "stock": 1
+        "stock": 3
       },
       {
         "name": "Lily",
-        "stock": 3
+        "stock": 1
       },
       {
         "name": "Camellia",
         "stock": 1
       },
       {
-        "name": "Mushroom",
-        "stock": 19
+        "name": "Peach",
+        "stock": 1
+      },
+      {
+        "name": "BurrosTail",
+        "stock": 3
+      },
+      {
+        "name": "Cactus",
+        "stock": 5
       }
     ]
   },
   "tool": {
-    "secondsUntilRestock": 205,
+    "secondsUntilRestock": 556,
     "items": [
       {
         "name": "WateringCan",
-        "stock": 3
+        "stock": 4
       },
       {
         "name": "PlanterPot",
@@ -78,11 +70,15 @@
       {
         "name": "CropCleanser",
         "stock": 2
+      },
+      {
+        "name": "Shovel",
+        "stock": 1
       }
     ]
   },
   "egg": {
-    "secondsUntilRestock": 805,
+    "secondsUntilRestock": 556,
     "items": [
       {
         "name": "CommonEgg",
@@ -91,7 +87,7 @@
     ]
   },
   "decor": {
-    "secondsUntilRestock": 805,
+    "secondsUntilRestock": 556,
     "items": [
       {
         "name": "SmallRock",
