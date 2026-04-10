@@ -2,8 +2,8 @@ import json
 import os
 import re
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from datetime import datetime, timedelta
 
 import requests
 
@@ -20,21 +20,20 @@ TRACKED_ITEMS = {
     "Starweaver Pod": ["starweaver", "starweaverpod"],
     "Dawnbinder Pod": ["dawnbinder", "dawnbinderpod"],
     "Moonbinder Pod": ["moonbinder", "moonbinderpod"],
-    "Pepper": ["pepper"],
-    "Lemon": ["lemon"],
-    "Dragon Fruit": ["dragonfruit"],
-    "Cacao": ["cacaobean"],
-    "Lychee": ["lycheepit"],
+    "Burro's Tail": ["burrostail"],
 }
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
-LAST_ALERT_TIME = None
-COOLDOWN = timedelta(minutes=5)
 POLL_SECONDS = 20
+ALERT_COOLDOWN_SECONDS = 300  # 5 minutes
 
 
 def normalize_name(text):
     return re.sub(r"[^a-z0-9]", "", text.lower())
+
+
+def utc_now():
+    return datetime.now(timezone.utc)
 
 
 def fetch_shop_data():
@@ -81,27 +80,53 @@ def get_in_stock_tracked_items(in_stock_items):
     return found
 
 
-def load_previous_state():
+def make_alert_key(tracked_items):
+    names = sorted(set(item["display_name"] for item in tracked_items))
+    return "|".join(names)
+
+
+def load_state():
     if not STATE_FILE.exists():
-        return None
-    return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        return {
+            "last_shop": None,
+            "last_alert_key": None,
+            "last_alert_time": None,
+        }
+
+    try:
+        data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        data = {}
+
+    return {
+        "last_shop": data.get("last_shop"),
+        "last_alert_key": data.get("last_alert_key"),
+        "last_alert_time": data.get("last_alert_time"),
+    }
 
 
-def save_state(data):
-    STATE_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+def save_state(state):
+    STATE_FILE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def should_send_alert(state, alert_key):
+    last_alert_key = state.get("last_alert_key")
+    last_alert_time = state.get("last_alert_time")
+
+    if last_alert_key == alert_key and last_alert_time:
+        try:
+            last_time = datetime.fromisoformat(last_alert_time)
+            if utc_now() - last_time < timedelta(seconds=ALERT_COOLDOWN_SECONDS):
+                print("Skipping duplicate alert within cooldown window.")
+                return False
+        except Exception:
+            pass
+
+    return True
 
 
 def send_discord_alert(tracked_items):
-    global LAST_ALERT_TIME
-
-    now = datetime.utcnow()
-
-    if LAST_ALERT_TIME is not None:
-        if now - LAST_ALERT_TIME < COOLDOWN:
-            print("Skipping alert due to cooldown.")
-            return
-
-    tracked_text = ", ".join(item["display_name"] for item in tracked_items)
+    tracked_text = ", ".join(sorted(set(item["display_name"] for item in tracked_items)))
 
     payload = {
         "content": f"<@&{PING_ROLE_ID}> tracked item spotted in the shop: **{tracked_text}**",
@@ -115,10 +140,10 @@ def send_discord_alert(tracked_items):
     print("Discord response:", r.text)
     r.raise_for_status()
 
-    LAST_ALERT_TIME = now
-
 
 def run_check():
+    state = load_state()
+
     current_shop = fetch_shop_data()
     current_in_stock = get_in_stock_items(current_shop)
     current_tracked = get_in_stock_tracked_items(current_in_stock)
@@ -126,11 +151,12 @@ def run_check():
     print("Current in-stock items:", [item["name"] for item in current_in_stock])
     print("Current tracked items:", [item["display_name"] for item in current_tracked])
 
-    previous_shop = load_previous_state()
+    previous_shop = state["last_shop"]
 
-    if previous_shop is None or previous_shop == {}:
+    if previous_shop is None:
         print("No previous state found. Saving baseline.")
-        save_state(current_shop)
+        state["last_shop"] = current_shop
+        save_state(state)
         return
 
     if current_shop != previous_shop:
@@ -138,14 +164,23 @@ def run_check():
 
         if current_tracked:
             print("Tracked items found:", [item["display_name"] for item in current_tracked])
-            send_discord_alert(current_tracked)
-            print("Alert sent.")
+
+            alert_key = make_alert_key(current_tracked)
+
+            if should_send_alert(state, alert_key):
+                send_discord_alert(current_tracked)
+                print("Alert sent.")
+                state["last_alert_key"] = alert_key
+                state["last_alert_time"] = utc_now().isoformat()
+            else:
+                print("Alert suppressed by dedupe/cooldown.")
         else:
             print("Shop changed, but no tracked items are currently in stock.")
     else:
         print("No shop change detected.")
 
-    save_state(current_shop)
+    state["last_shop"] = current_shop
+    save_state(state)
 
 
 def main():
