@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import time
 from pathlib import Path
 
 import requests
@@ -9,9 +10,7 @@ API_URL = "https://mg-api.ariedam.fr/live/shops"
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
-# display name -> aliases that may appear in API
 TRACKED_ITEMS = {
-    "BurrosTail": ["burrostail"],
     "Cactus": ["cactus"],
     "Bamboo": ["bamboo"],
     "Violet Cort": ["violetcort", "violetcortspore"],
@@ -20,9 +19,11 @@ TRACKED_ITEMS = {
     "Starweaver Pod": ["starweaver", "starweaverpod"],
     "Dawnbinder Pod": ["dawnbinder", "dawnbinderpod"],
     "Moonbinder Pod": ["moonbinder", "moonbinderpod"],
+    "Burro's Tail": ["burrostail"],
 }
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
+POLL_SECONDS = 20
 
 
 def normalize_name(text):
@@ -83,13 +84,11 @@ def save_state(data):
     STATE_FILE.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
-def send_discord_alert(tracked_items, in_stock_items):
+def send_discord_alert(tracked_items):
     tracked_text = ", ".join(item["display_name"] for item in tracked_items)
 
     payload = {
-        "content": (
-            f"<@&{PING_ROLE_ID}> tracked item spotted in the shop: **{tracked_text}**"
-        ),
+        "content": f"<@&{PING_ROLE_ID}> tracked item spotted in the shop: **{tracked_text}**",
         "allowed_mentions": {
             "roles": [PING_ROLE_ID]
         }
@@ -100,7 +99,8 @@ def send_discord_alert(tracked_items, in_stock_items):
     print("Discord response:", r.text)
     r.raise_for_status()
 
-def main():
+
+def run_check():
     current_shop = fetch_shop_data()
     current_in_stock = get_in_stock_items(current_shop)
     current_tracked = get_in_stock_tracked_items(current_in_stock)
@@ -120,7 +120,7 @@ def main():
 
         if current_tracked:
             print("Tracked items found:", [item["display_name"] for item in current_tracked])
-            send_discord_alert(current_tracked, current_in_stock)
+            send_discord_alert(current_tracked)
             print("Alert sent.")
         else:
             print("Shop changed, but no tracked items are currently in stock.")
@@ -128,6 +128,16 @@ def main():
         print("No shop change detected.")
 
     save_state(current_shop)
+
+
+def main():
+    print("Starting Railway shop checker...")
+    while True:
+        try:
+            run_check()
+        except Exception as e:
+            print("Error during check:", repr(e))
+        time.sleep(POLL_SECONDS)
 
 
 if __name__ == "__main__":
