@@ -9,14 +9,14 @@ WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
 RARE_ITEMS = [
-    "cactus",
-    "bamboo",
-    "violet cort spore",
-    "passion fruit",
-    "sunflower",
-    "starweaver pod",
-    "dawnbinder pod",
-    "moonbinder pod",
+    "Cactus",
+    "Bamboo",
+    "Violet Cort Spore",
+    "Passion Fruit",
+    "Sunflower",
+    "Starweaver Pod",
+    "Dawnbinder Pod",
+    "Moonbinder Pod",
 ]
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
