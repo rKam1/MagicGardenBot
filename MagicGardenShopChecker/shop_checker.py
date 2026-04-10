@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 
 import requests
@@ -8,18 +9,22 @@ API_URL = "https://mg-api.ariedam.fr/live/shops"
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
-RARE_ITEMS = [
-    "Cactus",
-    "Bamboo",
-    "Violet Cort Spore",
-    "Passion Fruit",
-    "Sunflower",
-    "Starweaver Pod",
-    "Dawnbinder Pod",
-    "Moonbinder Pod",
-]
+TRACKED_ITEMS = {
+    "cactus": "Cactus",
+    "bamboo": "Bamboo",
+    "violetcort": "Violet Cort",
+    "passionfruit": "Passion Fruit",
+    "sunflower": "Sunflower",
+    "starweaverpod": "Starweaver Pod",
+    "dawnbinderpod": "Dawnbinder Pod",
+    "moonbinderpod": "Moonbinder Pod",
+}
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
+
+
+def normalize_name(text):
+    return re.sub(r"[^a-z0-9]", "", text.lower())
 
 
 def fetch_shop_data():
@@ -51,10 +56,16 @@ def get_in_stock_rare_items(in_stock_items):
     found = []
 
     for item in in_stock_items:
-        lower_name = item["name"].lower()
-        for rare in RARE_ITEMS:
-            if rare in lower_name:
-                found.append(item)
+        normalized_item_name = normalize_name(item["name"])
+
+        for tracked_key, display_name in TRACKED_ITEMS.items():
+            if tracked_key in normalized_item_name:
+                found.append({
+                    "name": item["name"],
+                    "display_name": display_name,
+                    "stock": item["stock"],
+                    "category": item["category"],
+                })
                 break
 
     return found
@@ -71,9 +82,9 @@ def save_state(data):
 
 
 def send_discord_alert(found_rare_items, in_stock_items):
-    rare_text = ", ".join(item["name"] for item in found_rare_items)
+    rare_text = ", ".join(item["display_name"] for item in found_rare_items)
     stock_lines = "\n".join(
-        f"- {item['name']} x{item['stock']} ({item['category']})"
+        f"• {item['name']} x{item['stock']} ({item['category']})"
         for item in in_stock_items
     )
 
@@ -99,7 +110,7 @@ def main():
     current_rare = get_in_stock_rare_items(current_in_stock)
 
     print("Current in-stock items:", [item["name"] for item in current_in_stock])
-    print("Current rare items:", [item["name"] for item in current_rare])
+    print("Current rare items:", [item["display_name"] for item in current_rare])
 
     previous_shop = load_previous_state()
 
@@ -112,7 +123,7 @@ def main():
         print("Shop changed.")
 
         if current_rare:
-            print("Tracked rare items found:", [item["name"] for item in current_rare])
+            print("Tracked rare items found:", [item["display_name"] for item in current_rare])
             send_discord_alert(current_rare, current_in_stock)
             print("Alert sent.")
         else:
