@@ -10,6 +10,7 @@ WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
 TRACKED_ITEMS = {
+    "carrot": "Carrot",
     "cactus": "Cactus",
     "bamboo": "Bamboo",
     "violetcort": "Violet Cort",
