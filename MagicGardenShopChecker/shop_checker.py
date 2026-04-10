@@ -11,6 +11,7 @@ PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
 # display name -> aliases that may appear in API
 TRACKED_ITEMS = {
+    "BurrosTail": ["burrostail"],
     "Cactus": ["cactus"],
     "Bamboo": ["bamboo"],
     "Violet Cort": ["violetcort", "violetcortspore"],
