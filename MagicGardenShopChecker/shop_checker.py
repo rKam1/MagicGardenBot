@@ -85,15 +85,10 @@ def save_state(data):
 
 def send_discord_alert(tracked_items, in_stock_items):
     tracked_text = ", ".join(item["display_name"] for item in tracked_items)
-    stock_lines = "\n".join(
-        f"• {item['name']} x{item['stock']} ({item['category']})"
-        for item in in_stock_items
-    )
 
     payload = {
         "content": (
-            f"<@&{PING_ROLE_ID}> tracked item spotted in the shop: **{tracked_text}**\n\n"
-            f"**Items currently in stock:**\n{stock_lines}"
+            f"<@&{PING_ROLE_ID}> tracked item spotted in the shop: **{tracked_text}**"
         ),
         "allowed_mentions": {
             "roles": [PING_ROLE_ID]
@@ -104,7 +99,6 @@ def send_discord_alert(tracked_items, in_stock_items):
     print("Discord status:", r.status_code)
     print("Discord response:", r.text)
     r.raise_for_status()
-
 
 def main():
     current_shop = fetch_shop_data()
