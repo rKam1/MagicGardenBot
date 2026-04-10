@@ -1,10 +1,10 @@
 {
   "seed": {
-    "secondsUntilRestock": 22,
+    "secondsUntilRestock": 158,
     "items": [
       {
         "name": "Carrot",
-        "stock": 5
+        "stock": 22
       },
       {
         "name": "Cabbage",
@@ -12,44 +12,48 @@
       },
       {
         "name": "Strawberry",
-        "stock": 1
+        "stock": 3
       },
       {
         "name": "Aloe",
-        "stock": 5
+        "stock": 8
       },
       {
         "name": "Beet",
-        "stock": 5
+        "stock": 10
       },
       {
         "name": "FavaBean",
-        "stock": 4
+        "stock": 3
       },
       {
         "name": "Blueberry",
         "stock": 4
       },
       {
-        "name": "Apple",
-        "stock": 1
+        "name": "OrangeTulip",
+        "stock": 17
+      },
+      {
+        "name": "Tomato",
+        "stock": 2
       },
       {
         "name": "Echeveria",
         "stock": 1
       },
       {
-        "name": "Lily",
-        "stock": 2
+        "name": "Grape",
+        "stock": 1
       }
     ]
   },
   "tool": {
-    "secondsUntilRestock": 322,
+    "secondsUntilRestock": 458,
     "items": [
       {
         "name": "WateringCan",
-        "stock": 3
+        "stock": 5
       },
       {
         "name": "PlanterPot",
@@ -58,24 +62,24 @@
       {
         "name": "CropCleanser",
         "stock": 3
+      },
+      {
+        "name": "Shovel",
+        "stock": 1
       }
     ]
   },
   "egg": {
-    "secondsUntilRestock": 22,
+    "secondsUntilRestock": 758,
     "items": [
       {
         "name": "CommonEgg",
-        "stock": 3
-      },
-      {
-        "name": "UncommonEgg",
         "stock": 1
       }
     ]
   },
   "decor": {
-    "secondsUntilRestock": 2722,
+    "secondsUntilRestock": 1658,
     "items": [
       {
         "name": "SmallRock",
