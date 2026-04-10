@@ -22,7 +22,7 @@ TRACKED_ITEMS = {
     "Burro's Tail": ["burrostail"],
 }
 
-STATE_FILE = "shop_state.json"
+STATE_FILE = Path(__file__).parent / "shop_state.json"
 POLL_SECONDS = 20
 
 
