@@ -21,13 +21,13 @@ jobs:
           python-version: "3.13"
 
       - name: Install deps
-        run: pip install -r MagicGardenShopChecker/requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run checker
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           PING_ROLE_ID: ${{ secrets.PING_ROLE_ID }}
-        run: python MagicGardenShopChecker/shop_checker.py
+        run: python shop_checker.py
 
       - name: Commit updated state
         run: |
