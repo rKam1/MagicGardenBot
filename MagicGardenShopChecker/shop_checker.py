@@ -21,6 +21,9 @@ RARE_ITEMS = [
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
 
+# Turn this to True for one run if you want to force a Discord alert
+FORCE_ALERT = True
+
 
 def fetch_shop_data():
     r = requests.get(API_URL, timeout=20)
@@ -98,6 +101,16 @@ def main():
 
     print("Current in-stock items:", [item["name"] for item in current_in_stock])
     print("Current rare items:", [item["name"] for item in current_rare])
+
+    if FORCE_ALERT:
+        print("FORCE_ALERT is enabled.")
+        if current_rare:
+            send_discord_alert(current_rare, current_in_stock)
+            print("Forced alert sent.")
+        else:
+            print("FORCE_ALERT enabled, but no tracked rare items are currently in stock.")
+        save_state(current_shop)
+        return
 
     previous_shop = load_previous_state()
 
