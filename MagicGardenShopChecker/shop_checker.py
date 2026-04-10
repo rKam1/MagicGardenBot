@@ -9,6 +9,7 @@ WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 PING_ROLE_ID = os.environ["PING_ROLE_ID"]
 
 RARE_ITEMS = [
+    "carrot",
     "cactus",
     "bamboo",
     "violet cort spore",
