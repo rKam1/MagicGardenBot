@@ -1,6 +1,6 @@
 {
   "seed": {
-    "secondsUntilRestock": 186,
+    "secondsUntilRestock": 123,
     "items": [
       {
         "name": "Carrot",
@@ -61,7 +61,7 @@
     ]
   },
   "tool": {
-    "secondsUntilRestock": 186,
+    "secondsUntilRestock": 123,
     "items": [
       {
         "name": "WateringCan",
@@ -82,7 +82,7 @@
     ]
   },
   "egg": {
-    "secondsUntilRestock": 486,
+    "secondsUntilRestock": 423,
     "items": [
       {
         "name": "CommonEgg",
@@ -95,7 +95,7 @@
     ]
   },
   "decor": {
-    "secondsUntilRestock": 3186,
+    "secondsUntilRestock": 3123,
     "items": [
       {
         "name": "SmallRock",
