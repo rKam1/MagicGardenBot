@@ -28,6 +28,7 @@ TRACKED_ITEMS = {
     "Lychee": ["lychee"],
     "LegendaryEgg": ["legendaryegg"],
     "MythicalEgg": ["mythicalegg"],
+    "SnowEgg": ["snowegg"],
 }
 
 STATE_FILE = Path(__file__).parent / "shop_state.json"
